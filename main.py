@@ -16,6 +16,8 @@ def main():
     drawable = pygame.sprite.Group()
     asteroids = pygame.sprite.Group()
     shots = pygame.sprite.Group()
+    pygame.font.init()
+    my_font = pygame.font.SysFont('Comic Sans MS', 30)
 
     Player.containers = (updatable, drawable)
     Asteroid.containers = (asteroids, updatable, drawable)
@@ -24,6 +26,8 @@ def main():
 
     dt = 0
     score = 0
+    time = 0
+    clocker = 0
     pygame.init()
 
     print("Starting asteroids!")
@@ -32,6 +36,10 @@ def main():
     player = Player(x = SCREEN_WIDTH / 2, y = SCREEN_HEIGHT / 2)
     field = AsteroidField()
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+    text_surface = my_font.render(str(score), False, (255, 0, 0))
+    timer_surface = my_font.render(str(time), False, (255, 0, 0))
+
+
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -51,10 +59,20 @@ def main():
 
         
         pygame.Surface.fill(screen,"black")
+        timer_surface = my_font.render("Time alive: " + str(time), False, (255, 0, 0))
+        text_surface = my_font.render("Score: " + str(score), False, (255, 0, 0))
+
+        clocker += 1
+        if clocker >= constants.FPS:
+            clocker = 0
+            time += 1
+
+        screen.blit(text_surface, (100, 25))
+        screen.blit(timer_surface, (100, 60))
         for obj in drawable:
             obj.draw(screen)
 
         pygame.display.flip()
-        dt =  clock.tick(60) / 1000
+        dt =  clock.tick(constants.FPS) / 1000
 if __name__ == "__main__":
     main()
