@@ -23,6 +23,7 @@ def main():
     Shot.containers = (shots, updatable, drawable)
 
     dt = 0
+    score = 0
     pygame.init()
 
     print("Starting asteroids!")
@@ -39,12 +40,14 @@ def main():
             obj.update(dt)
         for asteroid in asteroids:
             if asteroid.collision(player):
+                print("Score is " + str(score))
                 exit("Game over!")
             for shot in shots:
                 if asteroid.collision(shot):
                     asteroid.split()
                     asteroid.kill()
                     shot.kill()
+                    score += 1
 
         
         pygame.Surface.fill(screen,"black")
