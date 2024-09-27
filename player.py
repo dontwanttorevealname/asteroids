@@ -53,7 +53,7 @@ class Player(circleshape.CircleShape):
                 self.speed = self.speed +  constants.PLAYER_ACCELERATION_RATE
         if nokeys == 1:
             if self.speed > 0:
-                self.speed = self.speed - constants.PLAYER_ACCELERATION_RATE
+                self.speed = self.speed + constants.PLAYER_DECELERATION_RATE
             elif self.speed < 0:
                 self.speed = self.speed + constants.PLAYER_ACCELERATION_RATE
         if keys[pygame.K_SPACE]:
