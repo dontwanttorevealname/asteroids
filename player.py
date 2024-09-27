@@ -10,6 +10,7 @@ class Player(circleshape.CircleShape):
         super().__init__(x, y, constants.PLAYER_RADIUS)
         self.rotation = 0
         self.cooldown = constants.PLAYER_SHOOT_COOLDOWN
+        self.speed = 0
     # in the player class
     def triangle(self):
         forward = pygame.Vector2(0, 1).rotate(self.rotation)
@@ -27,24 +28,47 @@ class Player(circleshape.CircleShape):
 
     def move(self, dt):
         forward = pygame.Vector2(0, 1).rotate(self.rotation)
-        self.position += forward * constants.PLAYER_SPEED * dt
+        self.position += forward * self.speed * dt
+
+
 
     def update(self, dt):
+
+        self.move(dt)
         self.cooldown = self.cooldown - dt
         keys = pygame.key.get_pressed()
-
+        nokeys = 1
         if keys[pygame.K_a]:
             inverse = dt * -1
             self.rotate(inverse)
         if keys[pygame.K_d]:
             self.rotate(dt)
         if keys[pygame.K_s]:
-            inverse = dt * -1
-            self.move(inverse)
+            nokeys = 0
+            if self.speed > (constants.PLAYER_MAX_SPEED * -1):
+                self.speed = self.speed -  constants.PLAYER_ACCELERATION_RATE
         if keys[pygame.K_w]:
-            self.move(dt)
+            nokeys = 0
+            if self.speed < constants.PLAYER_MAX_SPEED:
+                self.speed = self.speed +  constants.PLAYER_ACCELERATION_RATE
+        if nokeys == 1:
+            if self.speed > 0:
+                self.speed = self.speed - constants.PLAYER_ACCELERATION_RATE
+            elif self.speed < 0:
+                self.speed = self.speed + constants.PLAYER_ACCELERATION_RATE
         if keys[pygame.K_SPACE]:
             self.shoot()
+        if self.position.x < 0:
+            self.position.x = constants.SCREEN_WIDTH
+        elif self.position.x > constants.SCREEN_WIDTH:
+            self.position.x = 0
+        
+        if self.position.y < 0:
+            self.position.y = constants.SCREEN_HEIGHT
+        elif self.position.y > constants.SCREEN_HEIGHT:
+            self.position.y = 0
+
+
 
 
     def shoot(self):

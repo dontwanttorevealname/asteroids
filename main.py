@@ -28,6 +28,7 @@ def main():
     score = 0
     time = 0
     clocker = 0
+    lives = 3
     pygame.init()
 
     print("Starting asteroids!")
@@ -48,8 +49,14 @@ def main():
             obj.update(dt)
         for asteroid in asteroids:
             if asteroid.collision(player):
-                print("Score is " + str(score))
-                exit("Game over!")
+                if lives <= 1:
+                    print("Score is " + str(score))
+                    exit("Game over!")
+                else:
+                    lives -= 1
+                    for asteroid in asteroids:
+                        asteroid.kill()
+                    player.position = (SCREEN_WIDTH / 2 , SCREEN_HEIGHT / 2)
             for shot in shots:
                 if asteroid.collision(shot):
                     asteroid.split()
@@ -61,6 +68,8 @@ def main():
         pygame.Surface.fill(screen,"black")
         timer_surface = my_font.render("Time alive: " + str(time), False, (255, 0, 0))
         text_surface = my_font.render("Score: " + str(score), False, (255, 0, 0))
+        lives_surface = my_font.render("Lives remaining: " + str(lives), False, (255, 0, 0))
+
 
         clocker += 1
         if clocker >= constants.FPS:
@@ -69,6 +78,8 @@ def main():
 
         screen.blit(text_surface, (100, 25))
         screen.blit(timer_surface, (100, 60))
+        screen.blit(lives_surface, (100, 100))
+
         for obj in drawable:
             obj.draw(screen)
 
